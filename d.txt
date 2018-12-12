@@ -1,0 +1,83 @@
+`timescale 1ns / 1ps
+
+
+module d(
+    clock,
+	 reset,
+	 dx,
+	 dy,
+    inputsequence,
+    outputsequence
+    );
+
+	 input clock;
+	 input reset;
+    input inputsequence;
+	 
+	 reg dx;
+	 reg dy;
+    
+	 output reg outputsequence;
+	 
+	 parameter S0 = 2'b00;
+	 parameter S1 = 2'b01;
+    parameter S2 = 2'b10;
+	 
+	 reg [1:0] currentstate;
+	 reg [1:0] nextstate;
+	 
+	 always @(posedge clock or posedge reset) begin
+	 
+		if (reset == 1'b1) begin
+			currentstate <= S0;
+			end
+		else begin
+			currentstate <= nextstate;
+			end
+		end
+    
+	 always @(currentstate, inputsequence) begin
+	 
+	 case(currentstate)
+	 S0:begin
+        if (inputsequence == 1)begin
+		      dx <= ~(inputsequence)&
+				nextstate <= S1;
+		      outputsequence <= 1'b0;
+				end
+		  else begin
+		      nextstate <= S0;
+				outputsequence <= 1'b0;
+				end
+		 end
+	 S1:begin
+        if (inputsequence == 1)begin
+		      nextstate <= S1;
+		      outputsequence <= 1'b0;
+				end
+		  else begin
+		      nextstate <= S2;
+				outputsequence <= 1'b0;
+				end
+		 end
+	 S2:begin
+        if (inputsequence == 1)begin
+		      nextstate <= S0;
+		      outputsequence <= 1'b0;
+				end
+		  else begin
+		      nextstate <= S0;
+				outputsequence <= 1'b1;
+				end
+		 end
+	 default: begin
+				nextstate <= S0;
+				outputsequence <= 1'b0;
+		 end
+	 endcase
+  end
+
+
+
+
+endmodule

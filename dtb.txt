@@ -1,0 +1,51 @@
+`timescale 1ns / 1ps
+
+module dtb;
+
+	reg clock;
+	reg reset;
+	reg dx;
+	reg dy;
+	reg inputsequence;
+
+	wire outputsequence;
+
+	d uut (
+		.clock(clock), 
+		.reset(reset), 
+		.dx(dx), 
+		.dy(dy), 
+		.inputsequence(inputsequence), 
+		.outputsequence(outputsequence)
+	);
+
+	reg [9:0] sequence;
+	
+	int i;
+	
+	initial begin
+
+		sequence = 10'b0110010100;
+		clock = 0;
+		reset = 0;
+		dx = 0;
+		dy = 0;
+		inputsequence = 0;
+
+		#50;
+        
+	end
+	
+	
+	always begin
+		#20;
+		clock = ~clock;
+	end
+	
+	always @(posedge clock)begin
+		inputsequence = sequence>>i;
+		i = i+1;
+	end
+	    
+endmodule
+
